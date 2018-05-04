@@ -6,6 +6,14 @@ use AppBundle\Entity\AddressBook;
 use AppBundle\Entity\MyAddress;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
@@ -15,63 +23,57 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $errors = [];
-
         $myAddress = $this->getDoctrine()->getRepository(MyAddress::class)->find(1);
 
-        if ($myAddress) {
-            $zip = $myAddress->getZip();
-            $city = $myAddress->getCity();
-            $address = $myAddress->getAddress();
-        } else {
+        // @todo: port back to master
+        if (!$myAddress) {
             $myAddress = new MyAddress();
-            $zip = '';
-            $city = '';
-            $address = '';
         }
 
-        if ($request->isMethod('POST'))
+        $factory = $this->get('form.factory');
+        $builder = $factory->createBuilder(FormType::class);
+
+        $this->addAddressForm($builder, $myAddress->getZip(), $myAddress->getCity(), $myAddress->getAddress());
+        $this->addSubmitButton($builder);
+
+        $form = $builder->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted())
         {
+            $zip = $form->getData()['zip'];
+            $city = $form->getData()['city'];
+            $address = $form->getData()['address'];
 
-            if (/** @todo */true || $this->isCsrfTokenValid('sajat',$request->get('token'))) {
-                $zip = $request->get('zip');
-                $city = $request->get('city');
-                $address = $request->get('address');
+            if (strlen(trim($zip))!=4) {
+                $form->get('zip')->addError(new FormError('Az irányítószám nem 4 karakter hosszú!'));
+            }
 
-                if (strlen(trim($zip))!=4) {
-                    $errors['zip'][] = 'Az irányítószám nem 4 karakter hosszú!';
-                }
+            if (!is_numeric(trim($zip))) {
+                $form->get('zip')->addError(new FormError('Az irányítószám nem szám!'));
+            }
 
-                if (!is_numeric(trim($zip))) {
-                    $errors['zip'][] = 'Az irányítószám nem szám!';
-                }
+            if (trim($city)==='') {
+                $form->get('city')->addError(new FormError('A város megadása kötelező!'));
+            }
 
-                if (trim($city)==='') {
-                    $errors['city'][] = 'A város megadása kötelező!';
-                }
+            if (trim($address)==='') {
+                $form->get('address')->addError(new FormError('A cím megadása kötelező!'));
+            }
 
-                if (trim($address)==='') {
-                    $errors['address'][] = 'A cím megadása kötelező!';
-                }
-
-                if (empty($errors)) {
-                    $myAddress->setZip($zip);
-                    $myAddress->setCity($city);
-                    $myAddress->setAddress($address);
-                    $myAddress->setUserId(1);
-                    $this->getDoctrine()->getManager()->persist($myAddress);
-                    $this->getDoctrine()->getManager()->flush();
-                }
-            } else {
-                $errors['token'][] = 'CSRF token hiba!';
+            if ($form->isValid()) {
+                $myAddress->setZip($zip);
+                $myAddress->setCity($city);
+                $myAddress->setAddress($address);
+                $myAddress->setUserId(1);
+                $this->getDoctrine()->getManager()->persist($myAddress);
+                $this->getDoctrine()->getManager()->flush();
             }
         }
 
         return $this->render('ugly/self.html.php', [
-            'zip' => $zip,
-            'city' => $city,
-            'address' => $address,
-            'errors' => $errors
+            'form' => $form->createView(),
         ]);
     }
 
@@ -80,91 +82,118 @@ class DefaultController extends Controller
      */
     public function addressesAction(Request $request)
     {
-        $errors = [];
-
+        // @todo: port back to master
         $addressBook = $this->getDoctrine()->getRepository(AddressBook::class)->find(1);
 
-        if ($addressBook) {
-            $zip = $addressBook->getZip();
-            $city = $addressBook->getCity();
-            $address = $addressBook->getAddress();
-            $name = $addressBook->getName();
-            $explodedPhone = explode('/', $addressBook->getPhone());
-            $phone1 = $explodedPhone[0];
-            $phone2 = $explodedPhone[1];
-
-        } else {
+        if (!$addressBook) {
             $addressBook = new AddressBook();
-            $zip = '';
-            $city = '';
-            $name = '';
-            $address = '';
-            $phone1 = '';
-            $phone2 = '';
         }
 
-        if ($request->isMethod('POST'))
+        $factory = $this->get('form.factory');
+        $builder = $factory->createBuilder(FormType::class);
+
+        $this->addContactForm($builder, $addressBook->getName(), $addressBook->getPhone());
+        $this->addAddressForm($builder, $addressBook->getZip(), $addressBook->getCity(), $addressBook->getAddress());
+        $this->addSubmitButton($builder);
+
+        $form = $builder->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted())
         {
+            $zip = $form->getData()['zip'];
+            $city = $form->getData()['city'];
+            $address = $form->getData()['address'];
+            $name = $form->getData()['name'];
+            $phone1 = $form->getData()['phone1'];
+            $phone2 = $form->getData()['phone2'];
 
-            if (/** @todo */true || $this->isCsrfTokenValid('sajat',$request->get('token'))) {
-                $zip = $request->get('zip');
-                $city = $request->get('city');
-                $address = $request->get('address');
-                $name = $request->get('name');
-                $phone1 = $request->get('phone1');
-                $phone2 = $request->get('phone2');
+            if (strlen(trim($zip))!=4) {
+                $form->get('zip')->addError(new FormError('Az irányítószám nem 4 karakter hosszú!'));
+            }
 
-                if (!in_array($phone1, ['3620','3630','3670'])) {
-                    $errors['phone'][] = 'A körzetszám nem megfelelő!';
-                }
+            if (!is_numeric(trim($zip))) {
+                $form->get('zip')->addError(new FormError('Az irányítószám nem szám!'));
+            }
 
-                if (strlen(trim($phone2))!=7) {
-                    $errors['phone'][] = 'Nem megfelelő telefonszám!';
-                }
+            if (trim($city)==='') {
+                $form->get('city')->addError(new FormError('A város megadása kötelező!'));
+            }
 
-                if (!is_numeric($phone2)) {
-                    $errors['phone'][] = 'Nem megfelelő telefonszám!';
-                }
+            if (trim($address)==='') {
+                $form->get('address')->addError(new FormError('A cím megadása kötelező!'));
+            }
 
-                if (strlen(trim($zip))!=4) {
-                    $errors['zip'][] = 'Az irányítószám nem 4 karakter hosszú!';
-                }
+            if (!in_array($phone1, ['3620','3630','3670'])) {
+                $form->get('phone1')->addError(new FormError('A körzetszám nem megfelelő!'));
+            }
 
-                if (!is_numeric(trim($zip))) {
-                    $errors['zip'][] = 'Az irányítószám nem szám!';
-                }
+            if (strlen(trim($phone2))!=7) {
+                $form->get('phone2')->addError(new FormError('Nem megfelelő telefonszám!'));
+            }
 
-                if (trim($city)==='') {
-                    $errors['city'][] = 'A város megadása kötelező!';
-                }
+            if (!is_numeric($phone2)) {
+                $form->get('phone2')->addError(new FormError('Nem megfelelő telefonszám!'));
+            }
 
-                if (trim($address)==='') {
-                    $errors['address'][] = 'A cím megadása kötelező!';
-                }
-
-                if (empty($errors)) {
-                    $addressBook->setZip($zip);
-                    $addressBook->setCity($city);
-                    $addressBook->setAddress($address);
-                    $addressBook->setPhone($phone1.'/'.$phone2);
-                    $addressBook->setName($name);
-                    $addressBook->setUserId(1);
-                    $this->getDoctrine()->getManager()->persist($addressBook);
-                    $this->getDoctrine()->getManager()->flush();
-                }
-            } else {
-                $errors['token'][] = 'CSRF token hiba!';
+            if ($form->isValid()) {
+                $addressBook->setZip($zip);
+                $addressBook->setCity($city);
+                $addressBook->setAddress($address);
+                $addressBook->setPhone($phone1.'/'.$phone2);
+                $addressBook->setName($name);
+                $addressBook->setUserId(1);
+                $this->getDoctrine()->getManager()->persist($addressBook);
+                $this->getDoctrine()->getManager()->flush();
             }
         }
 
         return $this->render('ugly/addresses.html.php', [
-            'name' => $name,
-            'phone1' => $phone1,
-            'phone2' => $phone2,
-            'zip' => $zip,
-            'city' => $city,
-            'address' => $address,
-            'errors' => $errors
+            'form' => $form->createView(),
+        ]);
+    }
+
+    protected function addAddressForm(FormBuilderInterface $builder, string $zip, string $city, string $address)
+    {
+        $builder->add('zip',TextType::class, [
+            'label' => 'Irsz.',
+            'data' => $zip,
+            'translation_domain' => false,
+        ]);
+
+        $builder->add('city',TextType::class, [
+            'label' => 'Város',
+            'data' => $city,
+            'translation_domain' => false,
+        ]);
+
+        $builder->add('address',TextType::class, [
+            'label' => 'Utca, házszám',
+            'data' => $address,
+            'translation_domain' => false,
+        ]);
+    }
+
+    protected function addContactForm(FormBuilderInterface $builder, string $name, string $phone)
+    {
+        $builder->add('name',TextType::class, [
+            'label' => 'Név.',
+            'data' => $name,
+            'translation_domain' => false,
+        ]);
+
+        $builder->add('phone',TextType::class, [
+            'label' => 'Telefon',
+            'data' => $phone,
+            'translation_domain' => false,
+        ]);
+    }
+
+    protected function addSubmitButton(FormBuilderInterface $builder)
+    {
+        $builder->add('submit', SubmitType::class, [
+            'translation_domain' => false,
         ]);
     }
 }

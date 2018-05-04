@@ -35,21 +35,21 @@ class MyAddress
      *
      * @ORM\Column(name="zip", type="string", length=4)
      */
-    protected $zip;
+    protected $zip = '';
 
     /**
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=20)
      */
-    protected $city;
+    protected $city = '';
 
     /**
      * @var string
      *
      * @ORM\Column(name="address", type="string", length=255)
      */
-    protected $address;
+    protected $address = '';
 
     /**
      * @return int
