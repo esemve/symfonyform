@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\AddressBook;
 use AppBundle\Entity\MyAddress;
+use AppBundle\Form\AddressForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
@@ -32,10 +33,11 @@ class DefaultController extends Controller
         }
 
         $factory = $this->get('form.factory');
-        $builder = $factory->createBuilder(FormType::class);
-
-        $this->addAddressForm($builder, $myAddress->getZip(), $myAddress->getCity(), $myAddress->getAddress());
-        $this->addSubmitButton($builder);
+        $builder = $factory->createBuilder(AddressForm::class, [
+            'zip' => $myAddress->getZip(),
+            'city' => $myAddress->getCity(),
+            'address' => $myAddress->getAddress(),
+        ]);
 
         $form = $builder->getForm();
 
@@ -152,27 +154,6 @@ class DefaultController extends Controller
 
         return $this->render('ugly/addresses.html.php', [
             'form' => $form->createView(),
-        ]);
-    }
-
-    protected function addAddressForm(FormBuilderInterface $builder, string $zip, string $city, string $address)
-    {
-        $builder->add('zip',TextType::class, [
-            'label' => 'Irsz.',
-            'data' => $zip,
-            'translation_domain' => false,
-        ]);
-
-        $builder->add('city',TextType::class, [
-            'label' => 'Város',
-            'data' => $city,
-            'translation_domain' => false,
-        ]);
-
-        $builder->add('address',TextType::class, [
-            'label' => 'Utca, házszám',
-            'data' => $address,
-            'translation_domain' => false,
         ]);
     }
 
