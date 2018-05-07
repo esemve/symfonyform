@@ -7,6 +7,7 @@ use AppBundle\Entity\MyAddress;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -177,15 +178,32 @@ class DefaultController extends Controller
 
     protected function addContactForm(FormBuilderInterface $builder, string $name, string $phone)
     {
+        list($phone1, $phone2) = strpos($phone, '/') ? explode('/', $phone) : [null, null];
+
         $builder->add('name',TextType::class, [
             'label' => 'Név.',
             'data' => $name,
             'translation_domain' => false,
         ]);
 
-        $builder->add('phone',TextType::class, [
-            'label' => 'Telefon',
-            'data' => $phone,
+        $builder->add('phone1',ChoiceType::class, [
+            'label' => 'Körzetszám',
+            'data' => $phone1,
+            'multiple' => false,
+            'expanded' => false,
+            'choices' => [
+                '20' => '3620',
+                '30' => '3630',
+                '70' => '3670',
+            ],
+            'choice_translation_domain' => true,
+
+            'translation_domain' => false,
+        ]);
+
+        $builder->add('phone2',TextType::class, [
+            'label' => 'Telefonszám',
+            'data' => $phone2,
             'translation_domain' => false,
         ]);
     }
