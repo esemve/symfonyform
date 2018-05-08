@@ -14,3 +14,5 @@
 <?php echo $formHelper->row($form['address']); ?>
 
 <?php echo $formHelper->end($form); ?>
+
+<?php include __DIR__.'/footer.html.php'; ?>

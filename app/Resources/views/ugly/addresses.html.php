@@ -23,3 +23,5 @@ $formHelper = $view['form'];
 
 
 <?php echo $formHelper->end($form); ?>
+
+<?php include __DIR__.'/footer.html.php'; ?>
