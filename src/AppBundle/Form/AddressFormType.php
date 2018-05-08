@@ -6,7 +6,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class AddressForm extends FormType
+class AddressFormType extends FormType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

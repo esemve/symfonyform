@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\AddressBook;
 use AppBundle\Entity\MyAddress;
-use AppBundle\Form\AddressForm;
+use AppBundle\Form\AddressFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
@@ -33,11 +33,12 @@ class DefaultController extends Controller
         }
 
         $factory = $this->get('form.factory');
-        $builder = $factory->createBuilder(AddressForm::class, [
+        $builder = $factory->createBuilder(AddressFormType::class, [
             'zip' => $myAddress->getZip(),
             'city' => $myAddress->getCity(),
             'address' => $myAddress->getAddress(),
         ]);
+        $this->addSubmitButton($builder);
 
         $form = $builder->getForm();
 
@@ -92,11 +93,17 @@ class DefaultController extends Controller
             $addressBook = new AddressBook();
         }
 
-        $factory = $this->get('form.factory');
-        $builder = $factory->createBuilder(FormType::class);
+        list($phone1, $phone2) = !empty($addressBook->getPhone()) ? explode('/', $addressBook->getPhone(), 2) : [null, null];
 
-        $this->addContactForm($builder, $addressBook->getName(), $addressBook->getPhone());
-        $this->addAddressForm($builder, $addressBook->getZip(), $addressBook->getCity(), $addressBook->getAddress());
+        $factory = $this->get('form.factory');
+        $builder = $factory->createBuilder(AddressFormType::class, [
+            'zip' => $addressBook->getZip(),
+            'city' => $addressBook->getCity(),
+            'address' => $addressBook->getAddress(),
+            'phone1' => $phone1,
+            'phone2' => $phone2,
+            'name' => $addressBook->getName(),
+        ]);
         $this->addSubmitButton($builder);
 
         $form = $builder->getForm();
