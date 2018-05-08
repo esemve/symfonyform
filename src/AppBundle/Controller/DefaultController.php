@@ -196,8 +196,7 @@ class DefaultController extends Controller
                 '30' => '3630',
                 '70' => '3670',
             ],
-            'choice_translation_domain' => false ,
-
+            'choice_translation_domain' => false,
             'translation_domain' => false,
         ]);
 

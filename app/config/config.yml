@@ -9,6 +9,8 @@ parameters:
     locale: en
 
 framework:
+    translator:
+        fallback: 'en'
     #esi: ~
     #translator: { fallbacks: ['%locale%'] }
     secret: '%secret%'
