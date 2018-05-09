@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\AddressBook;
 use AppBundle\Entity\MyAddress;
 use AppBundle\Form\AddressFormType;
+use AppBundle\Form\ContactFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
@@ -96,7 +97,7 @@ class DefaultController extends Controller
         list($phone1, $phone2) = !empty($addressBook->getPhone()) ? explode('/', $addressBook->getPhone(), 2) : [null, null];
 
         $factory = $this->get('form.factory');
-        $builder = $factory->createBuilder(AddressFormType::class, [
+        $builder = $factory->createBuilder(ContactFormType::class, [
             'zip' => $addressBook->getZip(),
             'city' => $addressBook->getCity(),
             'address' => $addressBook->getAddress(),
@@ -197,6 +198,7 @@ class DefaultController extends Controller
 
     protected function addSubmitButton(FormBuilderInterface $builder)
     {
+        return;
         $builder->add('submit', SubmitType::class, [
             'translation_domain' => false,
         ]);

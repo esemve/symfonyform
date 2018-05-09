@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -11,7 +12,7 @@ class ContactFormType extends FormType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('addr', AddressFormType::class);
+        $builder->add('address', AddressFormType::class, ['data' => $options['data']]);
 
         $builder->add('phone1',ChoiceType::class, [
             'label' => 'Telefonszám',

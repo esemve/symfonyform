@@ -9,10 +9,12 @@ $formHelper = $view['form'];
 
 <?php echo $formHelper->start($form); ?>
 
-<?php echo $formHelper->row($form['zip']); ?>
-<?php echo $formHelper->row($form['city']); ?>
-<?php echo $formHelper->row($form['address']); ?>
+<?php echo $formHelper->row($form['address']['zip']); ?>
+<?php echo $formHelper->row($form['address']['city']); ?>
+<?php echo $formHelper->row($form['address']['address']); ?>
+
 <?php echo $formHelper->row($form['name']); ?>
+
 <div>
     <?php echo $formHelper->label($form['phone2']); ?>
     <?php echo $formHelper->errors($form['phone1']); ?>
@@ -21,6 +23,7 @@ $formHelper = $view['form'];
     <?php echo $formHelper->widget($form['phone2']); ?>
 </div>
 
+<input type="submit" value="Mentés" />
 
 <?php echo $formHelper->end($form); ?>
 
