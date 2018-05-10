@@ -13,8 +13,6 @@
 <?php echo $formHelper->row($form['city']); ?>
 <?php echo $formHelper->row($form['address']); ?>
 
-<input type="submit" value="Mentés" />
-
 <?php echo $formHelper->end($form); ?>
 
 <?php include __DIR__.'/footer.html.php'; ?>

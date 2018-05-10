@@ -23,8 +23,6 @@ $formHelper = $view['form'];
     <?php echo $formHelper->widget($form['phone2']); ?>
 </div>
 
-<input type="submit" value="Mentés" />
-
 <?php echo $formHelper->end($form); ?>
 
 <?php include __DIR__.'/footer.html.php'; ?>
