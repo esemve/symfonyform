@@ -41,14 +41,6 @@ class ContactFormType extends FormType
             'label' => 'Név',
             'data' => $options['data']['name'],
             'translation_domain' => false,
-            'constraints' => [
-                new NotBlank(),
-                new Length([
-                    'min' => 2,
-                    'minMessage' => 'cica',
-                    'max' => 16,
-                ])
-            ],
         ]);
     }
 
