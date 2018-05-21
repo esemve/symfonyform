@@ -39,7 +39,6 @@ class DefaultController extends Controller
             'city' => $myAddress->getCity(),
             'address' => $myAddress->getAddress(),
         ]);
-        $this->addSubmitButton($builder);
 
         $form = $builder->getForm();
 
@@ -105,7 +104,6 @@ class DefaultController extends Controller
             'phone2' => $phone2,
             'name' => $addressBook->getName(),
         ]);
-        $this->addSubmitButton($builder);
 
         $form = $builder->getForm();
 
@@ -162,45 +160,6 @@ class DefaultController extends Controller
 
         return $this->render('ugly/addresses.html.php', [
             'form' => $form->createView(),
-        ]);
-    }
-
-    protected function addContactForm(FormBuilderInterface $builder, string $name, string $phone)
-    {
-        list($phone1, $phone2) = strpos($phone, '/') ? explode('/', $phone) : [null, null];
-
-        $builder->add('name',TextType::class, [
-            'label' => 'Név.',
-            'data' => $name,
-            'translation_domain' => false,
-        ]);
-
-        $builder->add('phone1',ChoiceType::class, [
-            'label' => 'Körzetszám',
-            'data' => $phone1,
-            'multiple' => false,
-            'expanded' => false,
-            'choices' => [
-                '20' => '3620',
-                '30' => '3630',
-                '70' => '3670',
-            ],
-            'choice_translation_domain' => false,
-            'translation_domain' => false,
-        ]);
-
-        $builder->add('phone2',TextType::class, [
-            'label' => 'Telefonszám',
-            'data' => $phone2,
-            'translation_domain' => false,
-        ]);
-    }
-
-    protected function addSubmitButton(FormBuilderInterface $builder)
-    {
-        return;
-        $builder->add('submit', SubmitType::class, [
-            'translation_domain' => false,
         ]);
     }
 }
