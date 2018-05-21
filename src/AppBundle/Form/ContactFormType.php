@@ -39,7 +39,7 @@ class ContactFormType extends FormType
                 new NotBlank(),
                 new Range([
                     'min' => 1000000,
-                    'max' => 9000000,
+                    'max' => 9999999,
                 ]),
             ],
         ]);
