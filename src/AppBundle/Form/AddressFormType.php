@@ -8,6 +8,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Range;
 
 class AddressFormType extends FormType
 {
@@ -17,18 +20,33 @@ class AddressFormType extends FormType
             'label' => 'Irsz.',
             'data' => $options['data']['zip'] ?? null,
             'translation_domain' => false,
+            'constraints' => [
+                new NotBlank(),
+                new Range([
+                    'min' => 1000,
+                    'max' => 9999,
+                    'minMessage' => 'Az irányítószám pontosan 4 karakter hosszú',
+                    'maxMessage' => 'Az irányítószám pontosan 4 karakter hosszú',
+                ]),
+            ],
         ]);
 
         $builder->add('city',TextType::class, [
             'label' => 'Város',
             'data' => $options['data']['city'] ?? null,
             'translation_domain' => false,
+            'constraints' => [
+                new NotBlank(),
+            ],
         ]);
 
         $builder->add('address',TextType::class, [
             'label' => 'Utca, házszám',
             'data' => $options['data']['address'] ?? null,
             'translation_domain' => false,
+            'constraints' => [
+                new NotBlank(),
+            ],
         ]);
     }
 

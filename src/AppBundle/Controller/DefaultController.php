@@ -28,7 +28,6 @@ class DefaultController extends Controller
     {
         $myAddress = $this->getDoctrine()->getRepository(MyAddress::class)->find(1);
 
-        // @todo: port back to master
         if (!$myAddress) {
             $myAddress = new MyAddress();
         }
@@ -50,22 +49,6 @@ class DefaultController extends Controller
             $city = $form->getData()['city'];
             $address = $form->getData()['address'];
 
-            if (strlen(trim($zip))!=4) {
-                $form->get('zip')->addError(new FormError('Az irányítószám nem 4 karakter hosszú!'));
-            }
-
-            if (!is_numeric(trim($zip))) {
-                $form->get('zip')->addError(new FormError('Az irányítószám nem szám!'));
-            }
-
-            if (trim($city)==='') {
-                $form->get('city')->addError(new FormError('A város megadása kötelező!'));
-            }
-
-            if (trim($address)==='') {
-                $form->get('address')->addError(new FormError('A cím megadása kötelező!'));
-            }
-
             if ($form->isValid()) {
                 $myAddress->setZip($zip);
                 $myAddress->setCity($city);
@@ -86,7 +69,6 @@ class DefaultController extends Controller
      */
     public function addressesAction(Request $request)
     {
-        // @todo: port back to master
         $addressBook = $this->getDoctrine()->getRepository(AddressBook::class)->find(1);
 
         if (!$addressBook) {
@@ -117,34 +99,6 @@ class DefaultController extends Controller
             $name = $form->getData()['name'];
             $phone1 = $form->getData()['phone1'];
             $phone2 = $form->getData()['phone2'];
-
-            if (strlen(trim($zip))!=4) {
-                $form->get('zip')->addError(new FormError('Az irányítószám nem 4 karakter hosszú!'));
-            }
-
-            if (!is_numeric(trim($zip))) {
-                $form->get('zip')->addError(new FormError('Az irányítószám nem szám!'));
-            }
-
-            if (trim($city)==='') {
-                $form->get('city')->addError(new FormError('A város megadása kötelező!'));
-            }
-
-            if (trim($address)==='') {
-                $form->get('address')->addError(new FormError('A cím megadása kötelező!'));
-            }
-
-            if (!in_array($phone1, ['3620','3630','3670'])) {
-                $form->get('phone1')->addError(new FormError('A körzetszám nem megfelelő!'));
-            }
-
-            if (strlen(trim($phone2))!=7) {
-                $form->get('phone2')->addError(new FormError('Nem megfelelő telefonszám!'));
-            }
-
-            if (!is_numeric($phone2)) {
-                $form->get('phone2')->addError(new FormError('Nem megfelelő telefonszám!'));
-            }
 
             if ($form->isValid()) {
                 $addressBook->setZip($zip);

@@ -35,12 +35,22 @@ class ContactFormType extends FormType
             'label' => 'Telefonszám',
             'data' => $options['data']['phone2'],
             'translation_domain' => false,
+            'constraints' => [
+                new NotBlank(),
+                new Range([
+                    'min' => 1000000,
+                    'max' => 9000000,
+                ]),
+            ],
         ]);
 
         $builder->add('name',TextType::class, [
             'label' => 'Név',
             'data' => $options['data']['name'],
             'translation_domain' => false,
+            'constraints' => [
+                new NotBlank(),
+            ],
         ]);
     }
 
