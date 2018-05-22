@@ -16,11 +16,11 @@ $formHelper = $view['form'];
 <?php echo $formHelper->row($form['name']); ?>
 
 <div>
-    <?php echo $formHelper->label($form['phone2']); ?>
-    <?php echo $formHelper->errors($form['phone1']); ?>
-    <?php echo $formHelper->errors($form['phone2']); ?>
-    <?php echo $formHelper->widget($form['phone1']); ?>
-    <?php echo $formHelper->widget($form['phone2']); ?>
+    <?php echo $formHelper->label($form['phone']['phone2']); ?>
+    <?php echo $formHelper->errors($form['phone']['phone1']); ?>
+    <?php echo $formHelper->errors($form['phone']['phone2']); ?>
+    <?php echo $formHelper->widget($form['phone']['phone1']); ?>
+    <?php echo $formHelper->widget($form['phone']['phone2']); ?>
 </div>
 
 <?php echo $formHelper->end($form); ?>
