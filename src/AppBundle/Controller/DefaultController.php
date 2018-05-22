@@ -33,11 +33,7 @@ class DefaultController extends Controller
         }
 
         $factory = $this->get('form.factory');
-        $builder = $factory->createBuilder(AddressFormType::class, [
-            'zip' => $myAddress->getZip(),
-            'city' => $myAddress->getCity(),
-            'address' => $myAddress->getAddress(),
-        ]);
+        $builder = $factory->createBuilder(AddressFormType::class, $myAddress);
 
         $form = $builder->getForm();
 
@@ -45,15 +41,8 @@ class DefaultController extends Controller
 
         if ($form->isSubmitted())
         {
-            $zip = $form->getData()['zip'];
-            $city = $form->getData()['city'];
-            $address = $form->getData()['address'];
-
             if ($form->isValid()) {
-                $myAddress->setZip($zip);
-                $myAddress->setCity($city);
-                $myAddress->setAddress($address);
-                $myAddress->setUserId(1);
+                $myAddress = $form->getData();
                 $this->getDoctrine()->getManager()->persist($myAddress);
                 $this->getDoctrine()->getManager()->flush();
             }
