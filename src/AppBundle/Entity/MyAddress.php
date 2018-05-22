@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\MyAddressRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class MyAddress
+class MyAddress implements EntityInterface
 {
     /**
      * @var int

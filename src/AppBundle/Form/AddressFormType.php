@@ -3,7 +3,6 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\MyAddress;
-use AppBundle\Form\Transformer\MyAddressToArrayTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,10 +16,6 @@ use Symfony\Component\Validator\Constraints\Range;
 
 class AddressFormType extends AbstractType
 {
-    public function __construct(MyAddressToArrayTransformer $transformer)
-    {
-        $this->transformer = $transformer;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

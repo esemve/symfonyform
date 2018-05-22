@@ -3,49 +3,29 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\AddressBook;
+use AppBundle\Entity\EntityInterface;
 use AppBundle\Entity\MyAddress;
 use AppBundle\Form\AddressFormType;
 use AppBundle\Form\ContactFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
-        $myAddress = $this->getDoctrine()->getRepository(MyAddress::class)->find(1);
+        $myAddress = $this->findEntity(MyAddress::class, 1) ?? new MyAddress();
 
-        if (!$myAddress) {
-            $myAddress = new MyAddress();
-        }
-
-        $factory = $this->get('form.factory');
-        $builder = $factory->createBuilder(AddressFormType::class, $myAddress);
-
-        $form = $builder->getForm();
-
+        $form = $this->createForm(AddressFormType::class, $myAddress);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted())
-        {
-            if ($form->isValid()) {
-                $myAddress = $form->getData();
-                $this->getDoctrine()->getManager()->persist($myAddress);
-                $this->getDoctrine()->getManager()->flush();
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->persistAndFlush($form->getNormData());
         }
 
         return $this->render('ugly/self.html.php', [
@@ -56,54 +36,31 @@ class DefaultController extends Controller
     /**
      * @Route("/addresses", name="addresses")
      */
-    public function addressesAction(Request $request)
+    public function addressesAction(Request $request): Response
     {
-        $addressBook = $this->getDoctrine()->getRepository(AddressBook::class)->find(1);
+        $addressBook = $this->findEntity(AddressBook::class, 1) ?? new AddressBook();
 
-        if (!$addressBook) {
-            $addressBook = new AddressBook();
-        }
-
-        list($phone1, $phone2) = !empty($addressBook->getPhone()) ? explode('/', $addressBook->getPhone(), 2) : [null, null];
-
-        $factory = $this->get('form.factory');
-        $builder = $factory->createBuilder(ContactFormType::class, [
-            'zip' => $addressBook->getZip(),
-            'city' => $addressBook->getCity(),
-            'address' => $addressBook->getAddress(),
-            'phone1' => $phone1,
-            'phone2' => $phone2,
-            'name' => $addressBook->getName(),
-        ]);
-
-        $form = $builder->getForm();
+        $form = $this->createForm(ContactFormType::class, $addressBook);
 
         $form->handleRequest($request);
-
-        if ($form->isSubmitted())
-        {
-            $zip = $form->getData()['zip'];
-            $city = $form->getData()['city'];
-            $address = $form->getData()['address'];
-            $name = $form->getData()['name'];
-            $phone1 = $form->getData()['phone1'];
-            $phone2 = $form->getData()['phone2'];
-
-            if ($form->isValid()) {
-                $addressBook->setZip($zip);
-                $addressBook->setCity($city);
-                $addressBook->setAddress($address);
-                $addressBook->setPhone($phone1.'/'.$phone2);
-                $addressBook->setName($name);
-                $addressBook->setUserId(1);
-                $this->getDoctrine()->getManager()->persist($addressBook);
-                $this->getDoctrine()->getManager()->flush();
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->persistAndFlush($form->getNormData());
         }
 
         return $this->render('ugly/addresses.html.php', [
             'form' => $form->createView(),
         ]);
+    }
+
+    public function persistAndFlush($entity): void
+    {
+        $this->getDoctrine()->getManager()->persist($entity);
+        $this->getDoctrine()->getManager()->flush();
+    }
+
+    public function findEntity(string $type, int $id): ?EntityInterface
+    {
+        return $this->getDoctrine()->getRepository($type)->find($id);
     }
 }
 
