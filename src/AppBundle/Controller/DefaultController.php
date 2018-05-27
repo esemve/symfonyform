@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\AddressBook;
 use AppBundle\Entity\MyAddress;
+use AppBundle\Form\Config\AppFormConfig;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
@@ -26,20 +27,13 @@ class DefaultController extends Controller
     {
         $myAddress = $this->getDoctrine()->getRepository(MyAddress::class)->find(1);
 
-        // @todo: port back to master
         if (!$myAddress) {
             $myAddress = new MyAddress();
         }
 
-        $factory = $this->get('form.factory');
-        $builder = $factory->createBuilder(FormType::class);
+        $form = $this->getAddressForm();
 
-        $this->addAddressForm($builder, $myAddress->getZip(), $myAddress->getCity(), $myAddress->getAddress());
-        $this->addSubmitButton($builder);
-
-        $form = $builder->getForm();
-
-        $form->handleRequest($request);
+        $form->handleRequest();
 
         if ($form->isSubmitted())
         {
@@ -153,6 +147,14 @@ class DefaultController extends Controller
         return $this->render('ugly/addresses.html.php', [
             'form' => $form->createView(),
         ]);
+    }
+
+
+    protected function getAddressForm(): FormInterface
+    {
+        $form = new Form(new AppFormConfig());
+
+        return $form;
     }
 
     protected function addAddressForm(FormBuilderInterface $builder, string $zip, string $city, string $address)

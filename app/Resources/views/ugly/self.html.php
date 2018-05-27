@@ -7,12 +7,6 @@
 
 <h1>Saját címem</h1>
 
-<?php echo $formHelper->start($form); ?>
-
-<?php echo $formHelper->row($form['zip']); ?>
-<?php echo $formHelper->row($form['city']); ?>
-<?php echo $formHelper->row($form['address']); ?>
-
-<?php echo $formHelper->end($form); ?>
+<?php echo $formHelper->widget($form); ?>
 
 <?php include __DIR__.'/footer.html.php'; ?>
