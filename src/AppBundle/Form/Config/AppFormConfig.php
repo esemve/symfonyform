@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\DataCollector\FormDataCollector;
 use Symfony\Component\Form\Extension\DataCollector\FormDataExtractor;
 use Symfony\Component\Form\Extension\DataCollector\Proxy\ResolvedTypeDataCollectorProxy;
+use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationRequestHandler;
 use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormRegistry;
@@ -19,25 +20,60 @@ use Symfony\Component\Form\RequestHandlerInterface;
 use Symfony\Component\Form\ResolvedFormType;
 use Symfony\Component\Form\ResolvedFormTypeFactory;
 use Symfony\Component\Form\ResolvedFormTypeInterface;
+use Symfony\Component\PropertyAccess\PropertyPath;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
 
 class AppFormConfig implements FormConfigInterface
 {
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @var string
+     */
     protected $type;
+
+    /**
+     * @var array
+     */
+    protected $options;
+
+    /**
+     * AppFormConfig constructor.
+     * @param string $name
+     * @param string $type
+     * @param array $options
+     */
+    public function __construct(string $name, string $type, array $options)
+    {
+        $this->name = $name;
+        $this->type = $type;
+        $this->options = $options;
+    }
+
+    private function isRoot()
+    {
+        return $this->name === 'form';
+    }
 
     public function getEventDispatcher()
     {
         return new EventDispatcher();
     }
 
-    public function getName()
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
-        return 'form';
+        return $this->name;
     }
 
     public function getPropertyPath()
     {
-        throw new \BadMethodCallException('Method not implemented: '. __METHOD__);
+        return $this->isRoot() ? null : new PropertyPath($this->getName());
     }
 
     public function getMapped()
@@ -57,24 +93,16 @@ class AppFormConfig implements FormConfigInterface
 
     public function getCompound()
     {
-        return true;
+        return $this->isRoot();
     }
 
     public function getType()
     {
         $resistry = new FormRegistry([], new ResolvedFormTypeFactory());
 
-        $proxy = $resistry->getType(FormType::class);
+        $proxy = $resistry->getType($this->type);
 
         return $proxy;
-    }
-
-    /**
-     * @param mixed $type
-     */
-    public function setType($type): void
-    {
-        $this->type = $type;
     }
 
     public function getViewTransformers()
@@ -164,28 +192,21 @@ class AppFormConfig implements FormConfigInterface
 
     public function getAutoInitialize()
     {
-        throw new \BadMethodCallException('Method not implemented: '. __METHOD__);
+        return $this->isRoot();
     }
 
     public function getOptions()
     {
-        return [
-            'block_name' => null,
-            'translation_domain' => null,
-            'label_format' => null,
-            'label' => null,
-            'label_attr' => null,
-            'attr' => [],
-        ];
+        return $this->options;
     }
 
     public function hasOption($name)
     {
-        throw new \BadMethodCallException('Method not implemented: '. __METHOD__);
+        return array_key_exists($name, $this->options);
     }
 
     public function getOption($name, $default = null)
     {
-        throw new \BadMethodCallException('Method not implemented: '. __METHOD__);
+        return array_key_exists($name, $this->options) ? $this->options[$name] : $default;
     }
 }

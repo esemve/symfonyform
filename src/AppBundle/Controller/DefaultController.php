@@ -16,6 +16,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
@@ -152,7 +153,34 @@ class DefaultController extends Controller
 
     protected function getAddressForm(): FormInterface
     {
-        $form = new Form(new AppFormConfig());
+        $form = new Form(new AppFormConfig('form', FormType::class, [
+            'block_name' => null,
+            'translation_domain' => null,
+            'label_format' => null,
+            'label' => null,
+            'label_attr' => null,
+            'attr' => [],
+        ]));
+
+        $form['zip'] = new Form(new AppFormConfig('zip', TextType::class, [
+                'block_name' => null,
+                'translation_domain' => null,
+                'label_format' => null,
+                'label' => null,
+                'label_attr' => null,
+                'attr' => [],
+            ]
+        ));
+
+        $form['submit'] = new SubmitButton(new AppFormConfig('submit', SubmitType::class, [
+                'block_name' => null,
+                'translation_domain' => null,
+                'label_format' => null,
+                'label' => null,
+                'label_attr' => null,
+                'attr' => [],
+            ]
+        ));
 
         return $form;
     }
