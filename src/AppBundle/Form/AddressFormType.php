@@ -7,6 +7,9 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
@@ -34,7 +37,7 @@ class AddressFormType extends AbstractType
         $resolver->setDefaults(array(
             'without_submit' => false
         ));
-    }
+     }
 
     public function getParent()
     {
@@ -67,6 +70,18 @@ class AddressFormType extends AbstractType
                 new NotBlank(),
             ],
         ]);
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            if (
+                ($event->getForm()->get('zip')->getData()==='1111') &&
+                ($event->getForm()->get('city')->getData()!=='Budapest')
+            )
+            {
+                $event->getForm()->get('city')->addError(
+                    new FormError('Ehhez az irányítószámhoz csak Budapesti cím tartozhat!')
+                );
+            }
+        });
     }
 
     protected function buildAddressBox(FormBuilderInterface $builder, array $options): void

@@ -7,7 +7,9 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ContactFormType extends FormType
 {
@@ -47,6 +49,11 @@ class ContactFormType extends FormType
             'translation_domain' => false,
             'constraints' => [
                 new NotBlank(),
+                new Callback(function(string $data, ExecutionContextInterface $context) {
+                    if ($data==='Béla') {
+                        $context->addViolation('Ez nem egy női név!', []);
+                    }
+                })
             ],
         ]);
     }

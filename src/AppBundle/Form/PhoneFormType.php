@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Validator\Evil;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception;
@@ -46,6 +47,7 @@ class PhoneFormType extends AbstractType implements DataMapperInterface
             'translation_domain' => false,
             'constraints' => [
                 new NotBlank(),
+                new Evil(['evilNumber'=>'666']),
                 new Range([
                     'min' => 1000000,
                     'max' => 9999999,
