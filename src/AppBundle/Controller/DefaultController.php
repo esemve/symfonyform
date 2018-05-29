@@ -8,15 +8,7 @@ use AppBundle\Form\AddressFormType;
 use AppBundle\Form\ContactFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
@@ -28,7 +20,6 @@ class DefaultController extends Controller
     {
         $myAddress = $this->getDoctrine()->getRepository(MyAddress::class)->find(1);
 
-        // @todo: port back to master
         if (!$myAddress) {
             $myAddress = new MyAddress();
         }
@@ -86,7 +77,6 @@ class DefaultController extends Controller
      */
     public function addressesAction(Request $request)
     {
-        // @todo: port back to master
         $addressBook = $this->getDoctrine()->getRepository(AddressBook::class)->find(1);
 
         if (!$addressBook) {
