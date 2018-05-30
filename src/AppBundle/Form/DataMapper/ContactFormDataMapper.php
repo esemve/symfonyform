@@ -47,8 +47,8 @@ class ContactFormDataMapper implements DataMapperInterface
         /** @var AddressBook $data */
         $data->setPhone($forms['phone']->getData());
         $data->setName($forms['name']->getData());
-        $data->setZip($forms['address']['zip']->getData());
-        $data->setCity($forms['address']['city']->getData());
-        $data->setAddress($forms['address']['address']->getData());
+        $data->setZip($forms['address']->getNormData()['zip']);
+        $data->setCity($forms['address']->getNormData()['city']);
+        $data->setAddress($forms['address']->getNormData()['address']);
     }
 }

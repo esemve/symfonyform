@@ -28,7 +28,7 @@ class MyAddress implements EntityInterface
      *
      * @ORM\Column(name="user_id", type="integer")
      */
-    protected $userId;
+    protected $userId = 1;
 
     /**
      * @var string

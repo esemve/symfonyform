@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -21,8 +22,7 @@ class AddressFormType extends AbstractType
     {
         parent::buildForm($builder, $options);
 
-        $this->buildZipBox($builder, $options);
-        $this->buildCityBox($builder, $options);
+        $this->buildCityAndZipBox($builder, $options);
         $this->buildAddressBox($builder, $options);
 
         if ($options['without_submit']===false) {
@@ -44,8 +44,19 @@ class AddressFormType extends AbstractType
         return FormType::class;
     }
 
-    protected function buildZipBox(FormBuilderInterface $builder, array $options): void
+
+
+    protected function buildCityAndZipBox(FormBuilderInterface $builder, array $options): void
     {
+        $builder->add('city',TextType::class, [
+            'label' => 'Város',
+            'required' => false,
+            'translation_domain' => false,
+            'constraints' => [
+                new NotBlank(),
+            ],
+        ]);
+
         $builder->add('zip',TextType::class, [
             'label' => 'Irsz.',
             'translation_domain' => false,
@@ -59,17 +70,19 @@ class AddressFormType extends AbstractType
                 ]),
             ],
         ]);
-    }
 
-    protected function buildCityBox(FormBuilderInterface $builder, array $options): void
-    {
-        $builder->add('city',TextType::class, [
-            'label' => 'Város',
-            'translation_domain' => false,
-            'constraints' => [
-                new NotBlank(),
-            ],
-        ]);
+        $builder->get('city')->addViewTransformer(new CallbackTransformer(
+
+            // Oda
+            function($data) {
+                return $data;
+            },
+
+            // vissz
+            function($data) {
+                return ucfirst((string)$data);
+            }
+        ));
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             if (
