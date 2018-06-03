@@ -9,9 +9,11 @@ class EvilValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        if (strpos($value, $constraint->evilNumber)!==false)
+        if (($value!==null) && (strpos($value, $constraint->evilNumber)!==false))
         {
             $this->context->buildViolation($constraint->message)->addViolation();
         }
     }
 }
+
+

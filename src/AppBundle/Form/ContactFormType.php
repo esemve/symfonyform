@@ -49,7 +49,7 @@ class ContactFormType extends FormType
             'translation_domain' => false,
             'constraints' => [
                 new NotBlank(),
-                new Callback(function(string $data, ExecutionContextInterface $context) {
+                new Callback(function($data, ExecutionContextInterface $context) {
                     if ($data==='Béla') {
                         $context->addViolation('Ez nem egy női név!', []);
                     }
