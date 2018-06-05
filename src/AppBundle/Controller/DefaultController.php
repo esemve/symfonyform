@@ -101,9 +101,9 @@ class DefaultController extends Controller
 
         if ($form->isSubmitted())
         {
-            $zip = $form->getData()['zip'];
-            $city = $form->getData()['city'];
-            $address = $form->getData()['address'];
+            $zip = $form->getData()['address']['zip'];
+            $city = $form->getData()['address']['city'];
+            $address = $form->getData()['address']['address'];
             $name = $form->getData()['name'];
             $phone1 = $form->getData()['phone1'];
             $phone2 = $form->getData()['phone2'];
