@@ -37,14 +37,15 @@ class StopWordFilterTypeExtension extends AbstractTypeExtension
     {
         parent::configureOptions($resolver);
 
+        // todo: stop_words_enabled, puska Spika
+
         $resolver->setDefault('stop_words', $this->defaultStopWords);
+        $resolver->setAllowedTypes('stop_words', ['iterable']);
     }
 
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $this->stopWords = $options['stop_words'];
-
         $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use($options) {
             $this->validate($event, $options);
         });
@@ -59,7 +60,7 @@ class StopWordFilterTypeExtension extends AbstractTypeExtension
                 $data = [$data];
             }
 
-            if (is_array($data) || $data instanceof \Traversable) {
+            if (is_iterable($data)) {
                 foreach ($data as $value) {
                     if (gettype($value) == 'string' && mb_strpos($value, $stopWord) !== false) {
                         $event->getForm()->addError(new FormError("It contains stopword: '$stopWord'"));
