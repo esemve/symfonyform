@@ -59,9 +59,9 @@ class StopWordFilterTypeExtension extends AbstractTypeExtension
                 $data = [$data];
             }
 
-            if ($data instanceof \Traversable) {
+            if (is_array($data) || $data instanceof \Traversable) {
                 foreach ($data as $value) {
-                    if (gettype($data) == 'string' && mb_strpos($data, $stopWord) !== false) {
+                    if (gettype($value) == 'string' && mb_strpos($value, $stopWord) !== false) {
                         $event->getForm()->addError(new FormError("It contains stopword: '$stopWord'"));
                     }
                 }
