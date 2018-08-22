@@ -17,10 +17,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class StopWordFilterTypeExtension extends AbstractTypeExtension
 {
-    protected $defaultStopWords = [
-        'cica',
-        '  ',
-    ];
+    protected $defaultStopWords = [];
 
     /**
      * Returns the name of the type being extended.
@@ -37,8 +34,8 @@ class StopWordFilterTypeExtension extends AbstractTypeExtension
     {
         parent::configureOptions($resolver);
 
-        // todo: stop_words_enabled, puska Spika
-
+        $resolver->setDefault('stop_words_enabled', true);
+        $resolver->setAllowedTypes('stop_words_enabled', ['boolean']);
         $resolver->setDefault('stop_words', $this->defaultStopWords);
         $resolver->setAllowedTypes('stop_words', ['iterable']);
     }
@@ -53,6 +50,10 @@ class StopWordFilterTypeExtension extends AbstractTypeExtension
 
     protected function validate(FormEvent $event, array $options): void
     {
+        if ($options['stop_words_enabled']) {
+            return;
+        }
+
         $data = $event->getData();
 
         foreach ($options['stop_words'] as $stopWord) {
