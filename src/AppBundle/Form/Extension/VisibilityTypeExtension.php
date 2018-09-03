@@ -6,6 +6,7 @@ namespace AppBundle\Form\Extension;
 
 use AppBundle\Form\VisibilityChoiceType;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,10 +36,21 @@ class VisibilityTypeExtension extends AbstractTypeExtension
     // TODO
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if ($options['visibility_enabled']) {
-            $builder->add('visibility_', VisibilityChoiceType::class, [
-                'visibility_for' => '...', // TODO
+        parent::buildForm($builder, $options);
+
+        if ($options['compound'] && $options['visibility_enabled']) {
+
+            $builder->add('visibility', ChoiceType::class, [
+                'choices' => [
+                    'Privát' => 'private',
+                    'Barátok' => 'friends',
+                    'Barátok barátai' => 'friends_of_friends',
+                    'Mindenki' => 'public',
+                ],
+                'visibility_enabled' => false,
             ]);
+
+
         }
     }
 }

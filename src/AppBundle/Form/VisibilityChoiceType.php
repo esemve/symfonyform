@@ -9,12 +9,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class VisibilityChoiceType extends AbstractType
 {
+    public function getParent()
+    {
+        return ChoiceType::class;
+    }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
 
-        $resolver->addAllowedTypes('visibility_for', 'string');
+//        $resolver->setDefault('visibility_for', null);
         $resolver->setRequired('visibility_for', true);
+        $resolver->addAllowedTypes('visibility_for', 'string');
+
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -30,6 +37,7 @@ class VisibilityChoiceType extends AbstractType
                 'Barátok barátai' => 'friends_of_friends',
                 'Mindenki' => 'public',
             ],
+            'visibility_enabled' => false,
         ]);
     }
 }
