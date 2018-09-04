@@ -28,19 +28,19 @@ class VisibilityTypeExtension extends AbstractTypeExtension
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefault('visibility_enabled', true);
+        $resolver->setDefault('visibility_enabled', false);
         $resolver->setAllowedTypes('visibility_enabled', ['boolean']);
     }
 
-
-    // TODO
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
-        if ($options['compound'] && $options['visibility_enabled']) {
-
-            $builder->add('visibility', ChoiceType::class, [
+        if ($options['visibility_enabled']) {
+            dump($builder);
+            return;
+            $visibilityFor = $builder->getName();
+            $builder->add('visibility_' . $visibilityFor, VisibilityChoiceType::class, [
                 'choices' => [
                     'Privát' => 'private',
                     'Barátok' => 'friends',
@@ -49,8 +49,6 @@ class VisibilityTypeExtension extends AbstractTypeExtension
                 ],
                 'visibility_enabled' => false,
             ]);
-
-
         }
     }
 }
