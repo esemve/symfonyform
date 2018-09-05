@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Form\Extension;
 
+use AppBundle\Form\EventListener\VisibilityEventListener;
 use AppBundle\Form\VisibilityChoiceType;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -34,21 +35,10 @@ class VisibilityTypeExtension extends AbstractTypeExtension
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        parent::buildForm($builder, $options);
-
         if ($options['visibility_enabled']) {
-            dump($builder);
-            return;
-            $visibilityFor = $builder->getName();
-            $builder->add('visibility_' . $visibilityFor, VisibilityChoiceType::class, [
-                'choices' => [
-                    'Privát' => 'private',
-                    'Barátok' => 'friends',
-                    'Barátok barátai' => 'friends_of_friends',
-                    'Mindenki' => 'public',
-                ],
-                'visibility_enabled' => false,
-            ]);
+            $name = $builder->getName();
+            $type = get_class($builder->getType()->getInnerType());
+            $builder->addEventSubscriber(new VisibilityEventListener($name, $type, $options));
         }
     }
 }
