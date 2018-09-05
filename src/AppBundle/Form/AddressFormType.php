@@ -48,18 +48,14 @@ class AddressFormType extends AbstractType
 
     protected function buildCityAndZipBox(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('city',VisibilityWrapperType::class, [
+        $builder->add('city',TextType::class, [
             'label' => 'Város',
             'required' => false,
             'translation_domain' => false,
             'constraints' => [
                 new NotBlank(),
             ],
-            //'visibility_enabled' => true,
-            'inner_type' => TextType::class,
         ]);
-
-//        $builder->add('city_visibility', VisibilityChoiceType::class, []);
 
         $builder->add('zip',TextType::class, [
             'label' => 'Irsz.',
