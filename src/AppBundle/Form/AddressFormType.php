@@ -60,6 +60,7 @@ class AddressFormType extends AbstractType
         $builder->add('zip',TextType::class, [
             'label' => 'Irsz.',
             'translation_domain' => false,
+            'hint' => 'Irányítószám',
             'constraints' => [
                 new NotBlank(),
                 new Range([
