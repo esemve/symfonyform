@@ -40,7 +40,6 @@ class StopWordFilterTypeExtension extends AbstractTypeExtension
         $resolver->setAllowedTypes('stop_words', ['iterable']);
     }
 
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use($options) {
@@ -64,7 +63,7 @@ class StopWordFilterTypeExtension extends AbstractTypeExtension
             if (is_iterable($data)) {
                 foreach ($data as $value) {
                     if (gettype($value) == 'string' && mb_strpos($value, $stopWord) !== false) {
-                        $event->getForm()->addError(new FormError("It contains stopword: '$stopWord'"));
+                        $event->getForm()->addError(new FormError("It contains a stopword: '$stopWord'"));
                     }
                 }
             }
